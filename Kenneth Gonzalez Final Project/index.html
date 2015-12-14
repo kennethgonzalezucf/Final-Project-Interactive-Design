@@ -7,5 +7,86 @@
 <body>
   <script>
     runGame(GAME_LEVELS, DOMDisplay);
+	var canvas;
+var context;
+var squares =[];
+
+function Square(x,y,color){
+	this.x = x;
+	this.y = y;
+	this.color = color;
+	//this.dx = Math.random() * 4 - 2;
+	//this.dy = Math.random() * 4 - 2;
+}
+
+
+function init(){
+	canvas = document.getElementById('canvas');
+	context = canvas.getContext('2d');
+	//return setInterval(draw, 30);
+	window.addEventListener('resize', resizeCanvas, false);
+	window.addEventListener('orientationchange', resizeCanvas, false);
+	resizeCanvas();
+	//return setInterval(draw, 30);
+	canvas.onclick = function(event){
+		handleClick(event.clientX, event.clientY);
+	};
+	return setInterval(resizeCanvas, 30);
+}
+function handleClick(x,y){
+	var found = false;
+	
+	
+	for (var i=0;i<squares.length;i++){
+		d = Math.sqrt((squares[i].x - x)*(squares[i].x - x) + (squares[i].y - y)*(squares[i].y - y));
+		if (d <= 30) {
+			squares.splice(i, 1);
+			found = true;
+		}
+	}
+	
+	
+	fillBackgroundColor();
+	if (!found) {
+			var colors = ["red", "green", "blue", "orange", "purple", "yellow"];
+			var color = colors[Math.floor(Math.random()*colors.length)];
+			squares.push(new Square(x, y, color));
+			
+		}
+		for (var i=0; i<sqaures.length; i++) {
+			drawSquare(squares[i]);
+		}
+		
+		
+}
+
+function drawSquare(square) {
+		 //context.beginPath();
+		 //context.fillRect(square.x, square.y, square.x + 20, square.y + 20, true);
+		 context.fillStyle = square.color;
+		 //context.fill();
+		 context.fillRect(square.x, square.y, 20, 20, true);
+		/* if (square.x + square.dx > canvas.width || square.x + square.dx < 0)
+			square.dx = -square.dx;
+		if (square.y + square.dy > canvas.height || square.y + square.dy < 0)
+			square.dy = -square.dy;
+		square.x += square.dx;
+		square.y += square.dy;*/
+	  }
+	  
+	  
+function fillBackgroundColor (){
+	context.fillStyle = 'white';
+	context.fillRect(0,0,canvas.width,canvas.height);
+}
+function resizeCanvas (){
+	canvas.width = window.innerWidth - 20;
+	canvas.height = window.innerHeight - 20;
+	fillBackgroundColor();
+
+	for (var i=0;i<squares.length;i++){
+		drawSquare(squares[i]);
+	}
+}
   </script>
 </body>
